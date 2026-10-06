@@ -1,0 +1,1973 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HSIN . ARCHITECT</title>
+<style>
+  @font-face {
+    font-family: 'Swis721 Ex BT';
+    src: local('Swis721 Ex BT'), local('Swis721ExBT'),
+         local('Swis721 Ex BT Bold'), local('Swis721ExBT-Bold');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+  :root {
+    --font-title: 'Swis721 Ex BT', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    --black: #000;
+    --gray: #9a9a9a;
+    --line: #e2e2e2;
+    --bg: #ececec;
+    --white: #fff;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Swis721 Ex BT', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 400;
+    background: var(--white);
+    color: var(--black);
+    line-height: 1.5;
+    letter-spacing: 0.02em;
+    overflow-x: hidden;
+  }
+  .top-bar {
+    position: fixed; top: 0; left: 0; right: 0;
+    display: flex; justify-content: space-between; align-items: flex-start;
+    padding: 20px 36px; z-index: 3000; pointer-events: none;
+  }
+  .top-left { display: flex; flex-direction: column; gap: 6px; }
+  .top-logo {
+    font-family: 'Swis721 Ex BT', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 300; font-size: 14px;
+    letter-spacing: 0.06em; color: var(--black);
+    cursor: pointer; user-select: none; pointer-events: auto;
+  }
+  .hamburger {
+    width: 38px; height: 17px; display: flex; flex-direction: column;
+    justify-content: space-between; cursor: pointer; padding: 5px 0;
+    box-sizing: content-box; pointer-events: auto;
+  }
+  .hamburger span {
+    display: block; height: 1.5px; background: var(--black);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+  .hamburger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity: 0; }
+  .hamburger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+  .mini-menu {
+    position: fixed; top: 62px; left: 36px; z-index: 2999; display: none;
+    flex-direction: column; gap: 10px;
+    background: var(--white); padding: 14px 18px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  }
+  .mini-menu.open { display: flex; }
+  .mini-menu a {
+    font-family: 'Swis721 Ex BT', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 400; font-size: 13px;
+    letter-spacing: 0.06em; color: var(--gray);
+    text-decoration: none; white-space: nowrap;
+  }
+  .mini-menu a:hover { color: var(--black); }
+  .lang {
+    font-family: 'Swis721 Ex BT', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 400; font-size: 12px;
+    letter-spacing: 0.12em; cursor: pointer; user-select: none;
+    display: flex; align-items: center; gap: 2px;
+    color: #333; pointer-events: auto; background: var(--white);
+    padding: 5px 12px; border-radius: 2px; transition: opacity 0.3s ease;
+  }
+  .lang.hidden { display: none; }
+  .lang .lang-sep { color: #bbb; margin: 0 2px; }
+  .lang .lang-cn, .lang .lang-en { color: #b0b0b0; transition: color 0.3s; }
+  .lang .lang-cn.active, .lang .lang-en.active { color: var(--black); }
+  .hero {
+    min-height: 100vh; display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    text-align: center; padding: 0 24px;
+    cursor: pointer; background: var(--white);
+    position: relative; z-index: 1; user-select: none;
+  }
+  .hero .big {
+    font-family: 'Swis721 Ex BT', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 400;
+    font-size: clamp(48px, 8vw, 100px);
+    line-height: 1; color: var(--black);
+    position: relative; display: inline-block;
+  }
+  .hero .small {
+    font-family: 'Swis721 Ex BT', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 400;
+    font-size: clamp(18px, 2.4vw, 30px);
+    letter-spacing: 0.3em; color: var(--black); margin-top: 10px;
+  }
+  /* 首屏底部灰色提示 */
+  .hero .hint {
+    position: absolute;
+    bottom: 48px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Swis721 Ex BT', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 400;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: var(--gray);
+    text-transform: uppercase;
+    user-select: none;
+    z-index: 2;
+    animation: hintBreathe 2.4s ease-in-out infinite;
+  }
+  @keyframes hintBreathe {
+    0%, 100% { opacity: 0.4; }
+    50%      { opacity: 1; }
+  }
+  .dot-hero {
+    display: inline-block; margin-left: 0.06em; font-size: 0.32em;
+    font-weight: 400; vertical-align: -0.05em; line-height: 1;
+  }
+  .dot {
+    display: inline-block; margin-left: 0.05em; font-size: 0.6em;
+    font-weight: 400; vertical-align: -0.05em; line-height: 1;
+  }
+  .menu-overlay {
+    position: fixed; inset: 0; background: var(--white);
+    z-index: 2500; display: none; flex-direction: column;
+    justify-content: center; align-items: center; gap: 14px;
+  }
+  .menu-overlay.open { display: flex; }
+  .menu-overlay .menu-logo {
+    position: absolute; top: 20px; left: 36px;
+    font-family: 'Swis721 Ex BT', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 300; font-size: 14px;
+    letter-spacing: 0.06em;
+  }
+  .menu-overlay a {
+    font-family: 'Swis721 Ex BT', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 400;
+    font-size: clamp(18px, 2.2vw, 28px);
+    letter-spacing: 0.03em; color: var(--black);
+    text-decoration: none; padding: 6px 28px; transition: color 0.3s;
+  }
+  .menu-overlay a:hover { color: #b8b8b8; }
+  .page {
+    max-width: 1200px; margin: 0 auto;
+    padding: 130px 48px 100px; background: var(--white);
+  }
+  .page-title {
+    font-family: 'Swis721 Ex BT', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 400;
+    font-size: clamp(40px, 6.5vw, 76px);
+    text-align: center; margin-bottom: 70px;
+  }
+  /* About me */
+  .about-wrap {
+    display: grid; grid-template-columns: 400px 1fr;
+    gap: 64px; max-width: 1080px; margin: 0 auto;
+    align-items: stretch;
+  }
+  .about-left { display: flex; flex-direction: column; }
+  .about-photo {
+    width: 100%; aspect-ratio: 4/8;
+    background: var(--bg); overflow: hidden;
+  }
+  .about-photo img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+    filter: grayscale(100%); transition: filter 0.5s;
+  }
+  .about-photo:hover img { filter: grayscale(0%); }
+  .about-name {
+    font-family: 'Swis721 Ex BT', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 400;
+    font-size: clamp(22px, 2.4vw, 32px);
+    letter-spacing: 0.02em; margin-top: 14px; color: var(--black);
+  }
+  .about-right {
+    display: flex; flex-direction: column;
+    justify-content: space-between; gap: 26px;
+  }
+  .about-section h3 {
+    font-family: 'Swis721 Ex BT', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 700;
+    font-size: 15px; letter-spacing: 0.06em;
+    color: var(--black); margin-bottom: 10px;
+    text-transform: uppercase;
+  }
+  .about-section p {
+    font-family: 'Swis721 Ex BT', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 400;
+    font-size: 13px; line-height: 1.9; color: #333;
+    margin-bottom: 2px;
+  }
+  .about-section p .lbl {
+    font-family: 'Swis721 Ex BT', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    display: inline-block; min-width: 120px; color: var(--gray);
+  }
+  /* 让 Honors 等长内容也能正确换行缩进 */
+  .about-section p {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .about-section p .lbl {
+    flex-shrink: 0;
+    min-width: 80px;
+    width: 80px;
+  }
+  /* Education 的标签更长，单独加宽 */
+  .about-section.education p .lbl {
+    flex: 0 0 130px;
+    width: 130px;
+    min-width: 130px;
+  }
+  /* Project */
+  .h-scroll {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-rows: repeat(2, auto);
+    grid-auto-columns: min(70vw, 320px);
+    gap: 30px; overflow-x: auto;
+    padding: 0 0 36px; scroll-snap-type: x mandatory;
+  }
+  .h-scroll::-webkit-scrollbar { height: 3px; }
+  .h-scroll::-webkit-scrollbar-track { background: var(--line); }
+  .h-scroll::-webkit-scrollbar-thumb { background: #bbb; }
+  .card {
+    flex: 0 0 min(70vw, 320px); scroll-snap-align: center;
+    cursor: pointer; transition: transform 0.4s;
+  }
+  .card:hover { transform: translateY(-5px); }
+  .card-thumb {
+    width: 100%; aspect-ratio: 16/9;
+    background: var(--bg); overflow: hidden;
+  }
+  .card-thumb img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+    filter: grayscale(100%); transition: filter 0.5s, transform 0.5s;
+  }
+  .card:hover .card-thumb img { filter: grayscale(0%); transform: scale(1.03); }
+  .card-caption {
+    margin-top: 10px;
+    font-size: 11px;
+    color: var(--gray);
+    letter-spacing: 0.03em;
+    padding-left: 22px;
+    text-indent: -22px;
+    line-height: 1.6;
+  }
+  .card-caption .num {
+    color: #aaa;
+    margin-right: 6px;
+  }
+  /* ============ Photograph 专用：横向滚动，多组照片 ============ */
+  #photograph .photo-scroll {
+    display: flex;
+    gap: 60px;
+    overflow-x: auto;
+    padding: 0 0 36px;
+    scroll-snap-type: x mandatory;
+  }
+  #photograph .photo-scroll::-webkit-scrollbar { height: 3px; }
+  #photograph .photo-scroll::-webkit-scrollbar-track { background: var(--line); }
+  #photograph .photo-scroll::-webkit-scrollbar-thumb { background: #bbb; }
+
+  /* 一组照片 */
+  #photograph .photo-group {
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+  }
+
+  /* --- 竖图组：2 排 × 5 张 --- */
+  #photograph .group-vertical {
+    gap: 30px;
+  }
+  #photograph .group-vertical .row-top,
+  #photograph .group-vertical .row-bottom {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-rows: 1fr;
+    grid-auto-columns: min(70vw, 220px);
+    gap: 30px;
+  }
+  #photograph .group-vertical .card-thumb {
+    aspect-ratio: 3/4;
+  }
+
+  /* --- 横图组：3 排 × 3 张 --- */
+  #photograph .group-horizontal {
+    gap: 20px;
+  }
+  #photograph .group-horizontal .row-1,
+  #photograph .group-horizontal .row-2,
+  #photograph .group-horizontal .row-3 {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-rows: 1fr;
+    grid-auto-columns: min(70vw, 320px);
+    gap: 30px;
+  }
+  #photograph .group-horizontal .card-thumb {
+    aspect-ratio: 16/9;
+  }
+
+    /* ============ 3D Animation ============ */
+  #animation .video-scroll {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-rows: 1fr;
+    grid-auto-columns: min(45vw, 280px);
+    gap: 30px;
+    overflow-x: auto;
+    padding: 0 0 36px;
+    scroll-snap-type: x mandatory;
+  }
+  #animation .video-scroll::-webkit-scrollbar { height: 3px; }
+  #animation .video-scroll::-webkit-scrollbar-track { background: var(--line); }
+  #animation .video-scroll::-webkit-scrollbar-thumb { background: #bbb; }
+
+  #animation .video-card {
+    scroll-snap-align: start;
+    cursor: pointer;
+  }
+  #animation .video-card .video-thumb {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: var(--bg);
+    overflow: hidden;
+  }
+  #animation .video-card .video-thumb img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+    filter: grayscale(100%);
+    transition: filter 0.5s;
+  }
+  #animation .video-card:hover .video-thumb img { filter: grayscale(0%); }
+  #animation .video-card .video-thumb .play {
+    position: absolute;
+    inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff;
+    font-size: 42px;
+    text-shadow: 0 0 12px rgba(0,0,0,0.6);
+    pointer-events: none;
+  }
+  #animation .video-card .video-caption {
+    margin-top: 10px;
+    font-size: 11px;
+    color: var(--gray);
+    letter-spacing: 0.03em;
+    padding-left: 22px;
+    text-indent: -22px;
+    line-height: 1.6;
+  }
+  #animation .video-card .video-caption .num { color: #aaa; margin-right: 6px; }
+
+  /* 视频全屏播放遮罩 */
+  .video-modal {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.94);
+    z-index: 5100;
+    display: none;
+    align-items: center; justify-content: center;
+    cursor: zoom-out;
+  }
+  .video-modal.open { display: flex; }
+  .video-modal video {
+    max-width: 92vw;
+    max-height: 92vh;
+    display: block;
+    background: #000;
+    pointer-events: none;
+  }
+  .video-modal-close {
+    position: fixed;
+    top: 24px; right: 36px;
+    color: #fff;
+    font-family: 'Swis721 Ex BT', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.18em;
+    cursor: pointer;
+    z-index: 5101;
+    user-select: none;
+  }
+
+/* ============ 媒体详情页（Micro Film / Handmade Model） ============ */
+  .media-detail {
+    position: fixed; inset: 0;
+    background: var(--white);
+    z-index: 2700;
+    overflow-y: auto;
+    display: none;
+  }
+  .media-detail.open { display: block; }
+  .media-detail-close {
+    position: fixed; top: 22px; right: 36px;
+    font-size: 11px; letter-spacing: 0.18em;
+    color: var(--gray); cursor: pointer; z-index: 2750;
+  }
+  .media-detail-close:hover { color: var(--black); }
+  .media-detail-inner {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 100px 48px 80px;
+  }
+  .media-detail-num {
+    font-family: 'Swis721 Ex BT', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 12px; color: #aaa; margin-bottom: 8px;
+  }
+  .media-detail-inner h2 {
+    font-family: 'Swis721 Ex BT', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 400;
+    font-size: clamp(32px, 5vw, 60px);
+    line-height: 1.05;
+  }
+  .media-detail-sub {
+    font-size: clamp(20px, 2.4vw, 32px);
+    color: #b8b8b8; margin-top: 6px;
+  }
+  .media-detail-info {
+    display: grid; grid-template-columns: 160px 1fr;
+    gap: 80px; margin-top: 46px;
+    font-size: 12px; line-height: 1.85;
+  }
+  .media-detail-info .meta div { margin-bottom: 2px; }
+  .media-detail-info .desc { font-size: 13px; line-height: 1.85; }
+  .media-detail-imgs {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 16px; margin-top: 56px;
+  }
+  .media-detail-imgs .img {
+    aspect-ratio: 16/9; background: var(--bg); overflow: hidden;
+  }
+  .media-detail-imgs .img img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+  }
+  .media-detail-nav {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 64px; padding-top: 22px; border-top: 1px solid var(--line);
+  }
+  .media-detail-nav button {
+    background: none; border: none; font-family: inherit;
+    font-size: 12px; letter-spacing: 0.12em;
+    color: var(--gray); cursor: pointer; padding: 6px 0;
+  }
+  .media-detail-nav button:hover { color: var(--black); }
+  .media-detail-nav button:disabled { opacity: 0.25; cursor: default; }
+
+  /* 禁止右键、拖拽、选中 —— 针对所有图片 */
+  img {
+    -webkit-user-drag: none;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* 全屏预览遮罩 */
+  .lightbox {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.92);
+    z-index: 5000;
+    display: none;
+    align-items: center; justify-content: center;
+    cursor: zoom-out;
+  }
+  .lightbox.open { display: flex; }
+  .lightbox img {
+    max-width: 92vw;
+    max-height: 92vh;
+    object-fit: contain;
+    display: block;
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+  .lightbox-close {
+    position: fixed;
+    top: 24px; right: 36px;
+    color: #fff;
+    font-family: 'Swis721 Ex BT', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.18em;
+    cursor: pointer;
+    z-index: 5001;
+    user-select: none;
+  }
+  .detail {
+    position: fixed; inset: 0; background: var(--white);
+    z-index: 2400; overflow-y: auto; display: none;
+  }
+  .detail.open { display: block; }
+  .detail-close {
+    position: fixed; top: 22px; right: 36px;
+    font-size: 11px; letter-spacing: 0.18em;
+    color: var(--gray); cursor: pointer; z-index: 2450;
+  }
+  .detail-close:hover { color: var(--black); }
+  .detail-inner {
+    max-width: 1080px; margin: 0 auto;
+    padding: 100px 48px 80px;
+  }
+  .detail-num {
+    font-family: 'Swis721 Ex BT', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 12px; color: #aaa; margin-bottom: 8px;
+  }
+  .detail-inner h2 {
+    font-family: 'Swis721 Ex BT', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 400;
+    font-size: clamp(32px, 5vw, 60px); line-height: 1.05;
+  }
+  .detail-sub {
+    font-size: clamp(20px, 2.4vw, 32px);
+    color: #b8b8b8; margin-top: 6px;
+  }
+  .detail-info {
+    display: grid; grid-template-columns: 160px 1fr;
+    gap: 80px; margin-top: 46px;
+    font-size: 12px; line-height: 1.85;
+  }
+  .detail-info .meta div { margin-bottom: 2px; }
+  .detail-info .desc { font-size: 13px; line-height: 1.85; }
+  .detail-imgs {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 16px; margin-top: 56px;
+  }
+  .detail-imgs .img { aspect-ratio: 16/9; background: var(--bg); overflow: hidden; }
+  .detail-imgs .img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .detail-nav {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 64px; padding-top: 22px; border-top: 1px solid var(--line);
+  }
+  .detail-nav button {
+    background: none; border: none; font-family: inherit;
+    font-size: 12px; letter-spacing: 0.12em;
+    color: var(--gray); cursor: pointer; padding: 6px 0;
+  }
+  .detail-nav button:hover { color: var(--black); }
+  .detail-nav button:disabled { opacity: 0.25; cursor: default; }
+  /* ============ Others：新排版 ============ */
+  .others-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+  }
+
+  /* 上排：Music Production，左右各一个 */
+  .others-music-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+  }
+
+  /* 下排：左 Micro Film，右 Handmade Model */
+  .others-media-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+  }
+
+  .others-block-title {
+    font-family: 'Swis721 Ex BT', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--black);
+    margin-bottom: 14px;
+  }
+
+  /* 音乐卡片 */
+  .music-card {
+    background: #f4f4f4;
+    padding: 14px;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    cursor: pointer;
+  }
+  .music-card .cover {
+    width: 100%;
+    aspect-ratio: 32/9;
+    background: #d0d0d0;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 12px;
+    overflow: hidden;
+  }
+  .music-card .cover img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+  }
+  .music-card .meta .t {
+    font-size: 13px; color: var(--black);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .music-card .meta .a {
+    font-size: 11px; color: var(--gray);
+    margin-top: 2px;
+  }
+  .music-card .controls {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 12px; color: var(--gray);
+  }
+  .music-card .time {
+    font-size: 11px; color: var(--gray);
+    margin-left: auto;
+  }
+
+  /* 大图卡片（Micro Film / Handmade Model 封面） */
+  .media-card {
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+  }
+  .media-card .cover {
+    width: 100%;
+    aspect-ratio: 32/9;
+    background: var(--bg);
+    overflow: hidden;
+  }
+  .media-card .cover img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+    filter: grayscale(100%);
+    transition: filter 0.5s;
+  }
+  .media-card:hover .cover img { filter: grayscale(0%); }
+  .media-card .caption {
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--black);
+    letter-spacing: 0.04em;
+  }
+  /* 只让 Micro Film / Handmade Model 的封面用 16:9 */
+  .media-card .cover.cover-tall {
+    aspect-ratio: 16/9;
+  }
+  /* Music 播放器 */
+  .music-player {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    background: #f4f4f4;
+    padding: 20px;
+    border-radius: 4px;
+    aspect-ratio: 32/9;
+    justify-content: center;
+  }
+  .music-player-info .t {
+    font-size: 15px;
+    color: var(--black);
+    letter-spacing: 0.02em;
+  }
+  .music-player-info .a {
+    font-size: 12px;
+    color: var(--gray);
+    margin-top: 4px;
+  }
+  .music-player audio {
+    width: 100%;
+    height: 40px;
+  }
+
+  @media (max-width: 700px) {
+    .others-music-row,
+    .others-media-row {
+      grid-template-columns: 1fr;
+    }
+  }
+  .contact-list { list-style: none; max-width: 620px; margin: 0 auto; }
+  .contact-list li {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 20px 0; border-bottom: 1px solid var(--line);
+  }
+  .contact-list .label, .contact-list a {
+    font-family: 'Swis721 Ex BT', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 400;
+    font-size: 14px; letter-spacing: 0.02em; color: var(--black);
+  }
+  .contact-list a {
+    text-decoration: none; border-bottom: 1px solid transparent;
+    transition: border-color 0.3s;
+  }
+  .contact-list a:hover { border-color: var(--black); }
+  footer {
+    text-align: center; padding: 46px 24px;
+    font-size: 10px; color: var(--gray); letter-spacing: 0.16em;
+  }
+  @media (max-width: 700px) {
+    .top-bar { padding: 16px 20px; }
+    .mini-menu { left: 20px; top: 58px; }
+    .page { padding: 110px 22px 70px; }
+    .card { flex: 0 0 76vw; }
+    .detail-inner { padding: 86px 22px 60px; }
+    .detail-info { grid-template-columns: 1fr; gap: 16px; }
+    .detail-imgs { grid-template-columns: 1fr 1fr; }
+    .others-grid { grid-template-columns: 1fr; gap: 36px; }
+    .about-wrap { grid-template-columns: 1fr; gap: 30px; }
+    .about-right { justify-content: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ 固定左上角 + 右上角 ============ -->
+<div class="top-bar">
+  <div class="top-left">
+    <div class="top-logo" onclick="goHome()">HSIN<span class="dot">•</span></div>
+    <div class="hamburger" id="hamburger" onclick="toggleMiniMenu(event)">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+  <div class="lang" id="langBtn" onclick="toggleLang(event)">
+    <span class="lang-en active" id="langEN">EN</span>
+    <span class="lang-sep">/</span>
+    <span class="lang-cn" id="langCN">CN</span>
+  </div>
+</div>
+
+<!-- 三横线菜单 -->
+<div class="mini-menu" id="miniMenu">
+  <a href="#project"    onclick="jumpTo(event, '#project')"    data-cn="Project"      data-en="Project">Project</a>
+  <a href="#photograph" onclick="jumpTo(event, '#photograph')" data-cn="Photograph"   data-en="Photograph">Photograph</a>
+  <a href="#animation"  onclick="jumpTo(event, '#animation')"  data-cn="3D Animation" data-en="3D Animation">3D Animation</a>
+  <a href="#others"     onclick="jumpTo(event, '#others')"     data-cn="Others"       data-en="Others">Others</a>
+  <a href="#contact"    onclick="jumpTo(event, '#contact')"    data-cn="Contact me"   data-en="Contact me">Contact me</a>
+</div>
+
+<!-- ============ 首屏 ============ -->
+<div class="hero" id="hero" onclick="openMenu()">
+  <div class="big" data-cn="HSIN" data-en="HSIN">HSIN<span class="dot-hero">•</span></div>
+  <div class="small" data-cn="ARCHITECT" data-en="ARCHITECT">ARCHITECT</div>
+  <div class="hint">Press any key to continue</div>
+</div>
+
+<!-- ============ 全屏菜单 ============ -->
+<div class="menu-overlay" id="menuOverlay">
+  <div class="menu-logo">HSIN<span class="dot">•</span></div>
+  <a href="#about"      onclick="jumpTo(event, '#about')"      data-cn="About me"     data-en="About me">About me</a>
+  <a href="#project"    onclick="jumpTo(event, '#project')"    data-cn="Project"      data-en="Project">Project</a>
+  <a href="#photograph" onclick="jumpTo(event, '#photograph')" data-cn="Photograph"   data-en="Photograph">Photograph</a>
+  <a href="#animation"  onclick="jumpTo(event, '#animation')"  data-cn="3D Animation" data-en="3D Animation">3D Animation</a>
+  <a href="#others"     onclick="jumpTo(event, '#others')"     data-cn="Others"       data-en="Others">Others</a>
+  <a href="#contact"    onclick="jumpTo(event, '#contact')"    data-cn="Contact me"   data-en="Contact me">Contact me</a>
+</div>
+
+<!-- ============ About me ============ -->
+<section class="page" id="about">
+  <h1 class="page-title" data-cn="About me" data-en="About me">About me</h1>
+
+  <div class="about-wrap">
+
+    <div class="about-left">
+      <div class="about-photo">
+        <img src="images/about.jpg" alt="HSIN">
+      </div>
+      <div class="about-name">HSIN</div>
+    </div>
+
+    <div class="about-right">
+
+      <div class="about-section">
+        <h3>Personal Information</h3>
+        <p><span class="lbl">Name</span>HSIN</p>
+        <p><span class="lbl">Location</span>Chengdu,Sichuan, China</p>
+        <p><span class="lbl">Email</span>lucianhsin@gmail.com</p>
+        <p>&nbsp;</p>
+        <p>Architectural designer</p>
+        <p>Senior engineer</p>
+        <p>Class 1 registered architect</p>
+      </div>
+
+       <div class="about-section education">
+        <h3>Education and Work Experience</h3>
+        <p><span class="lbl">As of Jun. 2015</span>Urban Planning, XHU</p>
+        <p><span class="lbl">2015 - 2018</span>Architecture, focus on Architectural and Design Theory, SWJTU</p>
+        <p><span class="lbl">2018 - 2026</span>Architectural and Planning Design, CSWADI</p>
+      </div>
+
+      <div class="about-section">
+        <h3>Professional Skills</h3>
+        <p><span class="lbl">Design</span>AutoCAD, SketchUp, Rhino, Revit</p>
+        <p><span class="lbl">Rendering</span>D5, Enscape, V-Ray, AI Rendering</p>
+        <p><span class="lbl">Graphic</span>Adobe Photoshop, Illustrator, InDesign</p>
+      </div>
+
+      <div class="about-section">
+        <h3>Languages</h3>
+        <p><span class="lbl">Chinese</span>Native</p>
+        <p><span class="lbl">English</span>Proficient</p>
+      </div>
+
+      <div class="about-section">
+        <h3>Honors</h3>
+        <p><span class="lbl">2025</span>First Prize of National Excellent Engineering Survey and Design,China Engineering Survey and Design Association</p>
+        <p><span class="lbl">2024</span>2024 Architectural Design Award,The American Architects Award</p>
+        <p><span class="lbl">2024</span>First Prize for Engineering Survey and Design of Sichuan Province</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ Project ============ -->
+<section class="page" id="project">
+  <h1 class="page-title" data-cn="Project" data-en="Project">Project</h1>
+  <div class="h-scroll">
+    <div class="card" onclick="openDetail(0)">
+      <div class="card-thumb"><img src="images/proj1.jpg" alt=""></div>
+<div class="card-caption">
+  <span class="num">01</span>
+  <span class="txt">/ Architectural Schematic Design, Secondary Vocational School, Xinjiang</span>
+</div>
+    </div>
+    <div class="card" onclick="openDetail(1)">
+      <div class="card-thumb"><img src="images/proj2.jpg" alt=""></div>
+      <div class="card-caption"><span class="num">02</span> / Conceptual Schematic Design for a County-Level Medical Center in Sichuan</div>
+    </div>
+    <div class="card" onclick="openDetail(2)">
+      <div class="card-thumb"><img src="images/proj3.jpg" alt=""></div>
+      <div class="card-caption"><span class="num">03</span> / Campus Planning and Schematic Design for a University in Xinjiang</div>
+    </div>
+    <div class="card" onclick="openDetail(3)">
+      <div class="card-thumb"><img src="images/proj4.jpg" alt=""></div>
+      <div class="card-caption"><span class="num">04</span> / Conceptual Schematic Design for a High-Speed Railway Station Plot in Sichuan</div>
+    </div>
+    <div class="card" onclick="openDetail(4)">
+      <div class="card-thumb"><img src="images/proj5.jpg" alt=""></div>
+      <div class="card-caption"><span class="num">05</span> / Conceptual Schematic Design for a Museum in Sichuan</div>
+    </div>
+    <div class="card" onclick="openDetail(5)">
+      <div class="card-thumb"><img src="images/proj6.jpg" alt=""></div>
+      <div class="card-caption"><span class="num">06</span> / Schematic Design for an Exhibition Center in Sichuan</div>
+    </div>
+    <div class="card" onclick="openDetail(6)">
+      <div class="card-thumb"><img src="images/proj7.jpg" alt=""></div>
+      <div class="card-caption"><span class="num">07</span> / Project 07</div>
+    </div>
+    <div class="card" onclick="openDetail(7)">
+      <div class="card-thumb"><img src="images/proj8.jpg" alt=""></div>
+      <div class="card-caption"><span class="num">08</span> / Project 08</div>
+    </div>
+    <div class="card" onclick="openDetail(8)">
+      <div class="card-thumb"><img src="images/proj9.jpg" alt=""></div>
+      <div class="card-caption"><span class="num">09</span> / Project 09</div>
+    </div>
+    <div class="card" onclick="openDetail(9)">
+      <div class="card-thumb"><img src="images/proj10.jpg" alt=""></div>
+      <div class="card-caption"><span class="num">10</span> / Project 10</div>
+    </div>
+    <div class="card" onclick="openDetail(10)">
+      <div class="card-thumb"><img src="images/proj11.jpg" alt=""></div>
+      <div class="card-caption"><span class="num">11</span> / Project 11</div>
+    </div>
+    <div class="card" onclick="openDetail(11)">
+      <div class="card-thumb"><img src="images/proj12.jpg" alt=""></div>
+      <div class="card-caption"><span class="num">12</span> / Project 12</div>
+    </div>
+    <div class="card" onclick="openDetail(12)">
+      <div class="card-thumb"><img src="images/proj13.jpg" alt=""></div>
+      <div class="card-caption"><span class="num">13</span> / Project 13</div>
+    </div>
+    <div class="card" onclick="openDetail(13)">
+      <div class="card-thumb"><img src="images/proj14.jpg" alt=""></div>
+      <div class="card-caption"><span class="num">14</span> / Project 14</div>
+    </div>
+    <div class="card" onclick="openDetail(14)">
+      <div class="card-thumb"><img src="images/proj15.jpg" alt=""></div>
+      <div class="card-caption"><span class="num">15</span> / Project 15</div>
+    </div>
+    <div class="card" onclick="openDetail(15)">
+      <div class="card-thumb"><img src="images/proj16.jpg" alt=""></div>
+      <div class="card-caption"><span class="num">16</span> / Project 16</div>
+    </div>
+    <div class="card" onclick="openDetail(16)">
+      <div class="card-thumb"><img src="images/proj17.jpg" alt=""></div>
+      <div class="card-caption"><span class="num">17</span> / Project 17</div>
+    </div>
+    <div class="card" onclick="openDetail(17)">
+      <div class="card-thumb"><img src="images/proj18.jpg" alt=""></div>
+      <div class="card-caption"><span class="num">18</span> / Project 18</div>
+    </div>
+    <div class="card" onclick="openDetail(18)">
+      <div class="card-thumb"><img src="images/proj19.jpg" alt=""></div>
+      <div class="card-caption"><span class="num">19</span> / Project 19</div>
+    </div>
+    <div class="card" onclick="openDetail(19)">
+      <div class="card-thumb"><img src="images/proj20.jpg" alt=""></div>
+      <div class="card-caption"><span class="num">20</span> / Project 20</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ Photograph ============ -->
+<section class="page" id="photograph">
+  <h1 class="page-title" data-cn="Photograph" data-en="Photograph">Photograph</h1>
+
+  <div class="photo-scroll">
+
+    <!-- ========== 第 1 组：10 张竖图（2 排 × 5） ========== -->
+    <div class="photo-group group-vertical">
+      <div class="row-top">
+        <div class="card" onclick="openLightbox('images/photo1.jpg')">
+          <div class="card-thumb"><img src="images/photo1.jpg" alt=""></div>
+          <div class="card-caption"><span class="num">01</span> / Photography of Huaguoyuan Twin Towers in Guiyang</div>
+        </div>
+        <div class="card" onclick="openLightbox('images/photo2.jpg')">
+          <div class="card-thumb"><img src="images/photo2.jpg" alt=""></div>
+          <div class="card-caption"><span class="num">02</span> / Photography of Qianhu Miao Village in Guizhou</div>
+        </div>
+        <div class="card" onclick="openLightbox('images/photo3.jpg')">
+          <div class="card-thumb"><img src="images/photo3.jpg" alt=""></div>
+          <div class="card-caption"><span class="num">03</span> / Photography of Chengdu MixC Commercial Complex</div>
+        </div>
+        <div class="card" onclick="openLightbox('images/photo4.jpg')">
+          <div class="card-thumb"><img src="images/photo4.jpg" alt=""></div>
+          <div class="card-caption"><span class="num">04</span> / Photography of Dongshuimen Yangtze River Bridge in Chongqing</div>
+        </div>
+        <div class="card" onclick="openLightbox('images/photo5.jpg')">
+          <div class="card-thumb"><img src="images/photo5.jpg" alt=""></div>
+          <div class="card-caption"><span class="num">05</span> / Photography of Shangri-La Hotel Chengdu</div>
+        </div>
+      </div>
+      <div class="row-bottom">
+        <div class="card" onclick="openLightbox('images/photo6.jpg')">
+          <div class="card-thumb"><img src="images/photo6.jpg" alt=""></div>
+          <div class="card-caption"><span class="num">06</span> / Photography of Jinli Ancient Town in Chengdu</div>
+        </div>
+        <div class="card" onclick="openLightbox('images/photo7.jpg')">
+          <div class="card-thumb"><img src="images/photo7.jpg" alt=""></div>
+          <div class="card-caption"><span class="num">07</span> / Photography of Chengdu Yintai Commercial Complex</div>
+        </div>
+        <div class="card" onclick="openLightbox('images/photo8.jpg')">
+          <div class="card-thumb"><img src="images/photo8.jpg" alt=""></div>
+          <div class="card-caption"><span class="num">08</span> / Photography of Chengdu Natural History Museum</div>
+        </div>
+        <div class="card" onclick="openLightbox('images/photo9.jpg')">
+          <div class="card-thumb"><img src="images/photo9.jpg" alt=""></div>
+          <div class="card-caption"><span class="num">09</span> / Photography of Sanxingdui Museum in Guanghan</div>
+        </div>
+        <div class="card" onclick="openLightbox('images/photo10.jpg')">
+          <div class="card-thumb"><img src="images/photo10.jpg" alt=""></div>
+          <div class="card-caption"><span class="num">10</span> / Photography of Chengdu Financial City</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 第 2 组：9 张横图（3 排 × 3） ========== -->
+    <div class="photo-group group-horizontal">
+      <div class="row-1">
+        <div class="card" onclick="openLightbox('images/photo11.jpg')">
+          <div class="card-thumb"><img src="images/photo11.jpg" alt=""></div>
+          <div class="card-caption"><span class="num">11</span> / Photograph 11</div>
+        </div>
+        <div class="card" onclick="openLightbox('images/photo12.jpg')">
+          <div class="card-thumb"><img src="images/photo12.jpg" alt=""></div>
+          <div class="card-caption"><span class="num">12</span> / Photograph 12</div>
+        </div>
+        <div class="card" onclick="openLightbox('images/photo13.jpg')">
+          <div class="card-thumb"><img src="images/photo13.jpg" alt=""></div>
+          <div class="card-caption"><span class="num">13</span> / Photograph 13</div>
+        </div>
+      </div>
+      <div class="row-2">
+        <div class="card" onclick="openLightbox('images/photo14.jpg')">
+          <div class="card-thumb"><img src="images/photo14.jpg" alt=""></div>
+          <div class="card-caption"><span class="num">14</span> / Photograph 14</div>
+        </div>
+        <div class="card" onclick="openLightbox('images/photo15.jpg')">
+          <div class="card-thumb"><img src="images/photo15.jpg" alt=""></div>
+          <div class="card-caption"><span class="num">15</span> / Photograph 15</div>
+        </div>
+        <div class="card" onclick="openLightbox('images/photo16.jpg')">
+          <div class="card-thumb"><img src="images/photo16.jpg" alt=""></div>
+          <div class="card-caption"><span class="num">16</span> / Photograph 16</div>
+        </div>
+      </div>
+      <div class="row-3">
+        <div class="card" onclick="openLightbox('images/photo17.jpg')">
+          <div class="card-thumb"><img src="images/photo17.jpg" alt=""></div>
+          <div class="card-caption"><span class="num">17</span> / Photograph 17</div>
+        </div>
+        <div class="card" onclick="openLightbox('images/photo18.jpg')">
+          <div class="card-thumb"><img src="images/photo18.jpg" alt=""></div>
+          <div class="card-caption"><span class="num">18</span> / Photograph 18</div>
+        </div>
+        <div class="card" onclick="openLightbox('images/photo19.jpg')">
+          <div class="card-thumb"><img src="images/photo19.jpg" alt=""></div>
+          <div class="card-caption"><span class="num">19</span> / Photograph 19</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 第 3 组：10 张竖图（2 排 × 5） ========== -->
+    <div class="photo-group group-vertical">
+      <div class="row-top">
+        <div class="card" onclick="openLightbox('images/photo20.jpg')">
+          <div class="card-thumb"><img src="images/photo20.jpg" alt=""></div>
+          <div class="card-caption"><span class="num">20</span> / Photograph 20</div>
+        </div>
+        <div class="card" onclick="openLightbox('images/photo21.jpg')">
+          <div class="card-thumb"><img src="images/photo21.jpg" alt=""></div>
+          <div class="card-caption"><span class="num">21</span> / Photograph 21</div>
+        </div>
+        <div class="card" onclick="openLightbox('images/photo22.jpg')">
+          <div class="card-thumb"><img src="images/photo22.jpg" alt=""></div>
+          <div class="card-caption"><span class="num">22</span> / Photograph 22</div>
+        </div>
+        <div class="card" onclick="openLightbox('images/photo23.jpg')">
+          <div class="card-thumb"><img src="images/photo23.jpg" alt=""></div>
+          <div class="card-caption"><span class="num">23</span> / Photograph 23</div>
+        </div>
+        <div class="card" onclick="openLightbox('images/photo24.jpg')">
+          <div class="card-thumb"><img src="images/photo24.jpg" alt=""></div>
+          <div class="card-caption"><span class="num">24</span> / Photograph 24</div>
+        </div>
+      </div>
+      <div class="row-bottom">
+        <div class="card" onclick="openLightbox('images/photo25.jpg')">
+          <div class="card-thumb"><img src="images/photo25.jpg" alt=""></div>
+          <div class="card-caption"><span class="num">25</span> / Photograph 25</div>
+        </div>
+        <div class="card" onclick="openLightbox('images/photo26.jpg')">
+          <div class="card-thumb"><img src="images/photo26.jpg" alt=""></div>
+          <div class="card-caption"><span class="num">26</span> / Photograph 26</div>
+        </div>
+        <div class="card" onclick="openLightbox('images/photo27.jpg')">
+          <div class="card-thumb"><img src="images/photo27.jpg" alt=""></div>
+          <div class="card-caption"><span class="num">27</span> / Photograph 27</div>
+        </div>
+        <div class="card" onclick="openLightbox('images/photo28.jpg')">
+          <div class="card-thumb"><img src="images/photo28.jpg" alt=""></div>
+          <div class="card-caption"><span class="num">28</span> / Photograph 28</div>
+        </div>
+        <div class="card" onclick="openLightbox('images/photo29.jpg')">
+          <div class="card-thumb"><img src="images/photo29.jpg" alt=""></div>
+          <div class="card-caption"><span class="num">29</span> / Photograph 29</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 第 4 组：9 张横图（3 排 × 3） ========== -->
+    <div class="photo-group group-horizontal">
+      <div class="row-1">
+        <div class="card" onclick="openLightbox('images/photo30.jpg')">
+          <div class="card-thumb"><img src="images/photo30.jpg" alt=""></div>
+          <div class="card-caption"><span class="num">30</span> / Photograph 30</div>
+        </div>
+        <div class="card" onclick="openLightbox('images/photo31.jpg')">
+          <div class="card-thumb"><img src="images/photo31.jpg" alt=""></div>
+          <div class="card-caption"><span class="num">31</span> / Photograph 31</div>
+        </div>
+        <div class="card" onclick="openLightbox('images/photo32.jpg')">
+          <div class="card-thumb"><img src="images/photo32.jpg" alt=""></div>
+          <div class="card-caption"><span class="num">32</span> / Photograph 32</div>
+        </div>
+      </div>
+      <div class="row-2">
+        <div class="card" onclick="openLightbox('images/photo33.jpg')">
+          <div class="card-thumb"><img src="images/photo33.jpg" alt=""></div>
+          <div class="card-caption"><span class="num">33</span> / Photograph 33</div>
+        </div>
+        <div class="card" onclick="openLightbox('images/photo34.jpg')">
+          <div class="card-thumb"><img src="images/photo34.jpg" alt=""></div>
+          <div class="card-caption"><span class="num">34</span> / Photograph 34</div>
+        </div>
+        <div class="card" onclick="openLightbox('images/photo35.jpg')">
+          <div class="card-thumb"><img src="images/photo35.jpg" alt=""></div>
+          <div class="card-caption"><span class="num">35</span> / Photograph 35</div>
+        </div>
+      </div>
+      <div class="row-3">
+        <div class="card" onclick="openLightbox('images/photo36.jpg')">
+          <div class="card-thumb"><img src="images/photo36.jpg" alt=""></div>
+          <div class="card-caption"><span class="num">36</span> / Photograph 36</div>
+        </div>
+        <div class="card" onclick="openLightbox('images/photo37.jpg')">
+          <div class="card-thumb"><img src="images/photo37.jpg" alt=""></div>
+          <div class="card-caption"><span class="num">37</span> / Photograph 37</div>
+        </div>
+        <div class="card" onclick="openLightbox('images/photo38.jpg')">
+          <div class="card-thumb"><img src="images/photo38.jpg" alt=""></div>
+          <div class="card-caption"><span class="num">38</span> / Photograph 38</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ 3D Animation ============ -->
+<section class="page" id="animation">
+  <h1 class="page-title" data-cn="3D Animation" data-en="3D Animation">3D Animation</h1>
+
+  <div class="video-scroll">
+
+    <div class="video-card" onclick="openVideo('videos/anim1.mp4')">
+      <div class="video-thumb">
+        <img src="images/anim1.jpg" alt="">
+        <div class="play">▶</div>
+      </div>
+      <div class="video-caption"><span class="num">01</span> / 3D Animation for Conceptual Schematic Design of a Museum in Sichuan</div>
+    </div>
+
+    <div class="video-card" onclick="openVideo('videos/anim2.mp4')">
+      <div class="video-thumb">
+        <img src="images/anim2.jpg" alt="">
+        <div class="play">▶</div>
+      </div>
+      <div class="video-caption"><span class="num">02</span> / 3D Animation for Schematic Design of an Exhibition Center in Sichuan</div>
+    </div>
+
+    <div class="video-card" onclick="openVideo('videos/anim3.mp4')">
+      <div class="video-thumb">
+        <img src="images/anim3.jpg" alt="">
+        <div class="play">▶</div>
+      </div>
+      <div class="video-caption"><span class="num">03</span> / 3D Animation for Campus Planning and Schematic Design of a University in Xinjiang</div>
+    </div>
+
+    <div class="video-card" onclick="openVideo('videos/anim4.mp4')">
+      <div class="video-thumb">
+        <img src="images/anim4.jpg" alt="">
+        <div class="play">▶</div>
+      </div>
+      <div class="video-caption"><span class="num">04</span> / 3D Animation for Planning and Schematic Design of a Secondary Vocational School in Xinjiang</div>
+    </div>
+
+    <div class="video-card" onclick="openVideo('videos/anim5.mp4')">
+      <div class="video-thumb">
+        <img src="images/anim5.jpg" alt="">
+        <div class="play">▶</div>
+      </div>
+      <div class="video-caption"><span class="num">05</span> / 3D Animation 05</div>
+    </div>
+
+    <div class="video-card" onclick="openVideo('videos/anim6.mp4')">
+      <div class="video-thumb">
+        <img src="images/anim6.jpg" alt="">
+        <div class="play">▶</div>
+      </div>
+      <div class="video-caption"><span class="num">06</span> / 3D Animation 06</div>
+    </div>
+
+    <div class="video-card" onclick="openVideo('videos/anim7.mp4')">
+      <div class="video-thumb">
+        <img src="images/anim7.jpg" alt="">
+        <div class="play">▶</div>
+      </div>
+      <div class="video-caption"><span class="num">07</span> / 3D Animation 07</div>
+    </div>
+
+    <div class="video-card" onclick="openVideo('videos/anim8.mp4')">
+      <div class="video-thumb">
+        <img src="images/anim8.jpg" alt="">
+        <div class="play">▶</div>
+      </div>
+      <div class="video-caption"><span class="num">08</span> / 3D Animation 08</div>
+    </div>
+
+    <div class="video-card" onclick="openVideo('videos/anim9.mp4')">
+      <div class="video-thumb">
+        <img src="images/anim9.jpg" alt="">
+        <div class="play">▶</div>
+      </div>
+      <div class="video-caption"><span class="num">09</span> / 3D Animation 09</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ 视频全屏播放 ============ -->
+<div class="video-modal" id="videoModal" onclick="closeVideo()">
+  <div class="video-modal-close" onclick="closeVideo()">Close ×</div>
+  <video id="videoPlayer" src="" controls controlsList="nodownload noplaybackrate" disablepictureinpicture></video>
+</div>
+
+<!-- ============ 全屏预览遮罩 ============ -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <div class="lightbox-close" onclick="closeLightbox()">Close ×</div>
+  <img id="lightboxImg" src="" alt="">
+</div>
+
+<!-- ============ Others ============ -->
+<section class="page" id="others">
+  <h1 class="page-title" data-cn="Others" data-en="Others">Others</h1>
+
+  <div class="others-grid">
+
+    <!-- 上排：左 Music，右 AI Coding -->
+    <div class="others-media-row">
+
+      <!-- 左：Music Production（音乐播放器） -->
+      <div class="media-card">
+        <div class="others-block-title">Music Production (Personal)</div>
+        <div class="music-player">
+          <div class="music-player-info">
+            <div class="t">fate that i made you love me</div>
+          </div>
+          <audio controls src="music/song1.mp3"></audio>
+        </div>
+        <div class="caption">Personal music production, 2024</div>
+      </div>
+
+      <!-- 右：AI Coding -->
+      <div class="media-card" onclick="openMedia(4)">
+        <div class="others-block-title">AI Coding</div>
+        <div class="cover"><img src="images/aicoding.jpg" alt=""></div>
+        <div class="caption">AI Coding</div>
+      </div>
+
+    </div>
+
+    <!-- 下排：左 Micro Film，右 Handmade Model -->
+    <div class="others-media-row">
+
+      <div class="media-card" onclick="openMedia(2)">
+        <div class="others-block-title">Micro Film Production (Personal)</div>
+        <div class="cover cover-tall"><img src="images/film.jpg" alt=""></div>
+        <div class="caption">Micro Film Production</div>
+      </div>
+
+      <div class="media-card" onclick="openMedia(3)">
+        <div class="others-block-title">Handmade Model Making</div>
+        <div class="cover cover-tall"><img src="images/model.jpg" alt=""></div>
+        <div class="caption">Detailed Scene Creation and Handmade Model Making</div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ Contact me ============ -->
+<section class="page" id="contact">
+  <h1 class="page-title" data-cn="Contact me" data-en="Contact me">Contact me</h1>
+  <ul class="contact-list">
+    <li>
+      <span class="label" data-cn="E-mail" data-en="E-mail">E-mail</span>
+      <a href="mailto:your@email.com">lucianhsin@gmail.com</a>
+    </li>
+    <li>
+      <span class="label" data-cn="Instagram" data-en="Instagram">Instagram</span>
+      <a href="#">lucian_hsin</a>
+    </li>
+    <li>
+      <span class="label" data-cn="Facebook" data-en="Facebook">Facebook</span>
+      <a href="#">Lucian Hsin</a>
+    </li>
+    <li>
+      <span class="label" data-cn="X" data-en="X">X</span>
+      <a href="#">Lucian Hsin</a>
+    </li>
+  </ul>
+</section>
+
+<footer>© 2026 HSIN<span class="dot">•</span> ARCHITECT</footer>
+<!-- ============ 项目详情 ============ -->
+<div class="detail" id="detail">
+  <div class="detail-close" onclick="closeDetail()">Close ×</div>
+  <div class="detail-inner">
+    <div class="detail-num" id="dNum">01</div>
+    <h2 id="dTitle">Architectural Schematic Design, Secondary Vocational School, Xinjiang</h2>
+    <div class="detail-sub" id="dSub">Reuse the Abbey</div>
+    <div class="detail-info">
+      <div class="meta" id="dMeta"></div>
+      <div class="desc" id="dDesc"></div>
+    </div>
+    <div class="detail-imgs" id="detailImgs"></div>
+    <div class="detail-nav">
+      <button id="prevBtn" onclick="switchDetail(-1)">← Prev</button>
+      <button id="nextBtn" onclick="switchDetail(1)">Next →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 媒体详情页（Micro Film / Handmade Model） ============ -->
+<div class="media-detail" id="mediaDetail">
+  <div class="media-detail-close" onclick="closeMedia()">Close ×</div>
+  <div class="media-detail-inner">
+    <div class="media-detail-num" id="mNum">01</div>
+    <h2 id="mTitle">Micro Film 01</h2>
+    <div class="media-detail-sub" id="mSub">Personal Project</div>
+    <div class="media-detail-info">
+      <div class="meta" id="mMeta"></div>
+      <div class="desc" id="mDesc"></div>
+    </div>
+    <div class="media-detail-imgs" id="mImgs"></div>
+    <div class="media-detail-nav">
+      <button id="mPrevBtn" onclick="switchMedia(-1)">← Prev</button>
+      <button id="mNextBtn" onclick="switchMedia(1)">Next →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   全屏菜单
+   ============================================================ */
+function openMenu() {
+  document.getElementById('menuOverlay').classList.add('open');
+}
+function closeMenu() {
+  document.getElementById('menuOverlay').classList.remove('open');
+}
+
+/* ============================================================
+   三横线菜单
+   ============================================================ */
+function toggleMiniMenu(e) {
+  if (e) e.stopPropagation();
+  var ham = document.getElementById('hamburger');
+  var menu = document.getElementById('miniMenu');
+  ham.classList.toggle('open');
+  menu.classList.toggle('open');
+}
+
+/* ============================================================
+   跳转 + 关闭所有浮层
+   ============================================================ */
+function jumpTo(e, selector) {
+  if (e) { e.preventDefault(); e.stopPropagation(); }
+  closeMenu();
+  var ham = document.getElementById('hamburger');
+  var menu = document.getElementById('miniMenu');
+  if (ham) ham.classList.remove('open');
+  if (menu) menu.classList.remove('open');
+  var target = document.querySelector(selector);
+  if (target) target.scrollIntoView({ behavior: 'smooth' });
+}
+
+/* ============================================================
+   点 Logo 回首页
+   ============================================================ */
+function goHome() {
+  closeMenu();
+  var ham = document.getElementById('hamburger');
+  var menu = document.getElementById('miniMenu');
+  if (ham) ham.classList.remove('open');
+  if (menu) menu.classList.remove('open');
+
+  // 关闭项目详情页
+  var detailEl = document.getElementById('detail');
+  if (detailEl) detailEl.classList.remove('open');
+
+  // 关闭媒体详情页（Micro Film / Handmade Model / AI Coding）
+  var mediaEl = document.getElementById('mediaDetail');
+  if (mediaEl) mediaEl.classList.remove('open');
+
+  // 关闭视频播放
+  var videoEl = document.getElementById('videoModal');
+  if (videoEl) videoEl.classList.remove('open');
+
+  // 关闭图片全屏预览
+  var lbEl = document.getElementById('lightbox');
+  if (lbEl) lbEl.classList.remove('open');
+
+  // 恢复滚动
+  document.body.style.overflow = '';
+
+  // 回到页面顶部
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ============================================================
+   CN/EN 只在首页显示：滚动离开首屏就隐藏
+   ============================================================ */
+(function () {
+  var langEl = document.getElementById('langBtn');
+  var heroEl = document.getElementById('hero');
+  if (!langEl || !heroEl || !window.IntersectionObserver) return;
+
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        langEl.classList.remove('hidden');
+      } else {
+        langEl.classList.add('hidden');
+      }
+    });
+  }, { threshold: 0.15 });
+
+  io.observe(heroEl);
+})();
+
+/* ============================================================
+   语言切换
+   ============================================================ */
+var lang = 'EN';
+
+function applyLang() {
+  document.querySelectorAll('[data-cn][data-en]').forEach(function (el) {
+    var text = (lang === 'CN')
+      ? el.getAttribute('data-cn')
+      : el.getAttribute('data-en');
+    if (text != null) el.textContent = text;
+  });
+  var detailEl = document.getElementById('detail');
+  if (detailEl && detailEl.classList.contains('open')) renderDetail();
+}
+
+function toggleLang(e) {
+  if (e) e.stopPropagation();
+  lang = (lang === 'CN') ? 'EN' : 'CN';
+  document.getElementById('langCN').classList.toggle('active', lang === 'CN');
+  document.getElementById('langEN').classList.toggle('active', lang === 'EN');
+  applyLang();
+}
+
+/* ============================================================
+   项目数据
+   ============================================================ */
+var projects = [
+  {
+    num: '01',
+    title: { cn: '新疆某中职学校建筑方案设计', en: 'Architectural Schematic Design, Secondary Vocational School, Xinjiang' },
+    sub:   { cn: '实施项目',     en: 'Implementation Project' },
+    meta:  {
+      cn: ['公共建筑', '意大利 拉戈谷', '01/2021 - 03/2021'],
+      en: ['Public building', 'Xinjiang, China', '01/2021 - 03/2021']
+    },
+    desc:  {
+      cn: '项目在历史教堂附近置入礼堂、住宿与餐饮空间，以安静的地下体量保留原有废墟的独立性与神圣感。',
+      en: 'The project places an auditorium, accommodation, and dining spaces near a historic church as quiet underground volumes, preserving the independence and sacred presence of the existing ruin.'
+    },
+    imgs: ['images/proj1a.jpg','images/proj1b.jpg','images/proj1c.jpg']
+  },
+  {
+    num: '02',
+    title: { cn: '四川某县级医疗中心概念方案设计', en: 'Conceptual Schematic Design for a County-Level Medical Center in Sichuan' },
+    sub:   { cn: '公共空间', en: 'Public Space' },
+    meta:  {
+      cn: ['景观', '中国 杭州', '2022'],
+      en: ['Landscape', 'Hangzhou, China', '2022']
+    },
+    desc:  {
+      cn: '一个围绕现有树木展开的亭子，让树成为空间体验的中心。',
+      en: 'A pavilion that wraps around an existing tree, turning the tree into the center of the spatial experience.'
+    },
+    imgs: ['images/proj2a.jpg','images/proj2b.jpg','images/proj2c.jpg']
+  },
+  {
+    num: '03',
+    title: { cn: '新疆某大学校园规划设计方案', en: "Campus Planning and Schematic Design for a University in Xinjiang" },
+    sub:   { cn: '装置', en: 'Installation' },
+    meta:  {
+      cn: ['装置', '中国 上海', '2022'],
+      en: ['Installation', 'Shanghai, China', '2022']
+    },
+    desc:  {
+      cn: '一个通过一系列阶梯框架探索光影的垂直装置。',
+      en: 'A vertical installation exploring light and shadow through a series of stepped frames.'
+    },
+    imgs: ['images/proj3a.jpg','images/proj3b.jpg','images/proj3c.jpg']
+  },
+  {
+    num: '04',
+    title: { cn: '四川某高铁站地块概念方案设计', en: 'Conceptual Schematic Design for a High-Speed Railway Station Plot in Sichuan' },
+    sub:   { cn: '城市设计', en: 'Urban Design' },
+    meta:  {
+      cn: ['城市设计', '中国 厦门', '2021'],
+      en: ['Urban design', 'Xiamen, China', '2021']
+    },
+    desc:  {
+      cn: '一个重新连接城市与内港的水岸再生策略。',
+      en: 'A waterfront regeneration strategy that reconnects the city with its inner harbor.'
+    },
+    imgs: ['images/proj4a.jpg','images/proj4b.jpg','images/proj4c.jpg']
+  },
+  {
+    num: '05',
+    title: { cn: '四川某博物馆概念方案设计', en: 'Conceptual Schematic Design for a Museum in Sichuan' },
+    sub:   { cn: '类型', en: 'Type' },
+    meta:  {
+      cn: ['类型', '地点', '2022'],
+      en: ['Type', 'Location', '2022']
+    },
+    desc:  {
+      cn: '项目描述。',
+      en: 'Project description.'
+    },
+    imgs: ['images/proj5a.jpg','images/proj5b.jpg','images/proj5c.jpg']
+  },
+  {
+    num: '06',
+    title: { cn: '四川某展示中心方案设计', en: 'Schematic Design for an Exhibition Center in Sichuan' },
+    sub:   { cn: '类型', en: 'Type' },
+    meta:  {
+      cn: ['类型', '地点', '2022'],
+      en: ['Type', 'Location', '2022']
+    },
+    desc:  {
+      cn: '项目描述。',
+      en: 'Project description.'
+    },
+    imgs: ['images/proj6a.jpg','images/proj6b.jpg','images/proj6c.jpg']
+  },
+  {
+    num: '07',
+    title: { cn: '项目 07', en: 'Project 07' },
+    sub:   { cn: '类型', en: 'Type' },
+    meta:  {
+      cn: ['类型', '地点', '2022'],
+      en: ['Type', 'Location', '2022']
+    },
+    desc:  {
+      cn: '项目描述。',
+      en: 'Project description.'
+    },
+    imgs: ['images/proj7a.jpg','images/proj7b.jpg','images/proj7c.jpg']
+  },
+  {
+    num: '08',
+    title: { cn: '项目 08', en: 'Project 08' },
+    sub:   { cn: '类型', en: 'Type' },
+    meta:  {
+      cn: ['类型', '地点', '2022'],
+      en: ['Type', 'Location', '2022']
+    },
+    desc:  {
+      cn: '项目描述。',
+      en: 'Project description.'
+    },
+    imgs: ['images/proj8a.jpg','images/proj8b.jpg','images/proj8c.jpg']
+  },
+  {
+    num: '09',
+    title: { cn: '项目 09', en: 'Project 09' },
+    sub:   { cn: '类型', en: 'Type' },
+    meta:  {
+      cn: ['类型', '地点', '2022'],
+      en: ['Type', 'Location', '2022']
+    },
+    desc:  {
+      cn: '项目描述。',
+      en: 'Project description.'
+    },
+    imgs: ['images/proj9a.jpg','images/proj9b.jpg','images/proj9c.jpg']
+  },
+  {
+    num: '10',
+    title: { cn: '项目 10', en: 'Project 10' },
+    sub:   { cn: '类型', en: 'Type' },
+    meta:  {
+      cn: ['类型', '地点', '2022'],
+      en: ['Type', 'Location', '2022']
+    },
+    desc:  {
+      cn: '项目描述。',
+      en: 'Project description.'
+    },
+    imgs: ['images/proj10a.jpg','images/proj10b.jpg','images/proj10c.jpg']
+  },
+  {
+    num: '11',
+    title: { cn: '项目 11', en: 'Project 11' },
+    sub:   { cn: '类型', en: 'Type' },
+    meta:  {
+      cn: ['类型', '地点', '2022'],
+      en: ['Type', 'Location', '2022']
+    },
+    desc:  {
+      cn: '项目描述。',
+      en: 'Project description.'
+    },
+    imgs: ['images/proj11a.jpg','images/proj11b.jpg','images/proj11c.jpg']
+  },
+  {
+    num: '12',
+    title: { cn: '项目 12', en: 'Project 12' },
+    sub:   { cn: '类型', en: 'Type' },
+    meta:  {
+      cn: ['类型', '地点', '2022'],
+      en: ['Type', 'Location', '2022']
+    },
+    desc:  {
+      cn: '项目描述。',
+      en: 'Project description.'
+    },
+    imgs: ['images/proj12a.jpg','images/proj12b.jpg','images/proj12c.jpg']
+  },
+  {
+    num: '13',
+    title: { cn: '项目 13', en: 'Project 13' },
+    sub:   { cn: '类型', en: 'Type' },
+    meta:  {
+      cn: ['类型', '地点', '2022'],
+      en: ['Type', 'Location', '2022']
+    },
+    desc:  {
+      cn: '项目描述。',
+      en: 'Project description.'
+    },
+    imgs: ['images/proj13a.jpg','images/proj13b.jpg','images/proj13c.jpg']
+  },
+  {
+    num: '14',
+    title: { cn: '项目 14', en: 'Project 14' },
+    sub:   { cn: '类型', en: 'Type' },
+    meta:  {
+      cn: ['类型', '地点', '2022'],
+      en: ['Type', 'Location', '2022']
+    },
+    desc:  {
+      cn: '项目描述。',
+      en: 'Project description.'
+    },
+    imgs: ['images/proj14a.jpg','images/proj14b.jpg','images/proj14c.jpg']
+  },
+  {
+    num: '15',
+    title: { cn: '项目 15', en: 'Project 15' },
+    sub:   { cn: '类型', en: 'Type' },
+    meta:  {
+      cn: ['类型', '地点', '2022'],
+      en: ['Type', 'Location', '2022']
+    },
+    desc:  {
+      cn: '项目描述。',
+      en: 'Project description.'
+    },
+    imgs: ['images/proj15a.jpg','images/proj15b.jpg','images/proj15c.jpg']
+  },
+  {
+    num: '16',
+    title: { cn: '项目 16', en: 'Project 16' },
+    sub:   { cn: '类型', en: 'Type' },
+    meta:  {
+      cn: ['类型', '地点', '2022'],
+      en: ['Type', 'Location', '2022']
+    },
+    desc:  {
+      cn: '项目描述。',
+      en: 'Project description.'
+    },
+    imgs: ['images/proj16a.jpg','images/proj16b.jpg','images/proj16c.jpg']
+  },
+  {
+    num: '17',
+    title: { cn: '项目 17', en: 'Project 17' },
+    sub:   { cn: '类型', en: 'Type' },
+    meta:  {
+      cn: ['类型', '地点', '2022'],
+      en: ['Type', 'Location', '2022']
+    },
+    desc:  {
+      cn: '项目描述。',
+      en: 'Project description.'
+    },
+    imgs: ['images/proj17a.jpg','images/proj17b.jpg','images/proj17c.jpg']
+  },
+  {
+    num: '18',
+    title: { cn: '项目 18', en: 'Project 18' },
+    sub:   { cn: '类型', en: 'Type' },
+    meta:  {
+      cn: ['类型', '地点', '2022'],
+      en: ['Type', 'Location', '2022']
+    },
+    desc:  {
+      cn: '项目描述。',
+      en: 'Project description.'
+    },
+    imgs: ['images/proj18a.jpg','images/proj18b.jpg','images/proj18c.jpg']
+  },
+  {
+    num: '19',
+    title: { cn: '项目 19', en: 'Project 19' },
+    sub:   { cn: '类型', en: 'Type' },
+    meta:  {
+      cn: ['类型', '地点', '2022'],
+      en: ['Type', 'Location', '2022']
+    },
+    desc:  {
+      cn: '项目描述。',
+      en: 'Project description.'
+    },
+    imgs: ['images/proj19a.jpg','images/proj19b.jpg','images/proj19c.jpg']
+  },
+  {
+    num: '20',
+    title: { cn: '项目 20', en: 'Project 20' },
+    sub:   { cn: '类型', en: 'Type' },
+    meta:  {
+      cn: ['类型', '地点', '2022'],
+      en: ['Type', 'Location', '2022']
+    },
+    desc:  {
+      cn: '项目描述。',
+      en: 'Project description.'
+    },
+    imgs: ['images/proj20a.jpg','images/proj20b.jpg','images/proj20c.jpg']
+  }
+];
+
+var cur = 0;
+
+function openDetail(i) {
+  cur = i;
+  renderDetail();
+  document.getElementById('detail').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeDetail() {
+  document.getElementById('detail').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function renderDetail() {
+  var p = projects[cur];
+  var L = (lang === 'CN') ? 'cn' : 'en';
+  document.getElementById('dNum').textContent = p.num;
+  document.getElementById('dTitle').textContent = p.title[L];
+  document.getElementById('dSub').textContent = p.sub[L];
+  document.getElementById('dMeta').innerHTML = p.meta[L]
+    .map(function (m) { return '<div>' + m + '</div>'; })
+    .join('');
+  document.getElementById('dDesc').textContent = p.desc[L];
+  document.getElementById('detailImgs').innerHTML = p.imgs
+    .map(function (src) { return '<div class="img"><img src="' + src + '" alt=""></div>'; })
+    .join('');
+  document.getElementById('prevBtn').disabled = (cur === 0);
+  document.getElementById('nextBtn').disabled = (cur === projects.length - 1);
+}
+
+function switchDetail(step) {
+  var n = cur + step;
+  if (n < 0 || n >= projects.length) return;
+  cur = n;
+  renderDetail();
+}
+/* ============================================================
+   全屏预览（Photograph 专用）
+   ============================================================ */
+function openLightbox(src) {
+  var lb = document.getElementById('lightbox');
+  var img = document.getElementById('lightboxImg');
+  if (!lb || !img) return;
+  img.src = src;
+  lb.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  var lb = document.getElementById('lightbox');
+  if (!lb) return;
+  lb.classList.remove('open');
+  document.getElementById('lightboxImg').src = '';
+  document.body.style.overflow = '';
+}
+
+/* 按 ESC 也关闭预览 */
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape') closeLightbox();
+});
+
+/* 禁止右键菜单（防止另存为） */
+document.addEventListener('contextmenu', function (e) {
+  if (e.target.tagName === 'IMG') e.preventDefault();
+});
+
+/* 禁止拖拽图片 */
+document.addEventListener('dragstart', function (e) {
+  if (e.target.tagName === 'IMG') e.preventDefault();
+});
+/* ============================================================
+   媒体详情（Micro Film / Handmade Model）
+   0、1 = 音乐（不打开详情，仅示例占位）
+   2 = Micro Film，3 = Handmade Model
+   ============================================================ */
+var mediaItems = [
+  // 0：音乐 1（备用，不会被点击打开）
+  {
+    num: '01',
+    title: 'Music Production 01',
+    sub:  'Personal',
+    meta: ['Music', '2024'],
+    desc: '音乐作品描述。',
+    imgs: ['images/music1a.jpg','images/music1b.jpg','images/music1c.jpg']
+  },
+  // 1：音乐 2（备用）
+  {
+    num: '02',
+    title: 'Music Production 02',
+    sub:  'Personal',
+    meta: ['Music', '2024'],
+    desc: '音乐作品描述。',
+    imgs: ['images/music2a.jpg','images/music2b.jpg','images/music2c.jpg']
+  },
+  // 2：Micro Film（3 个页面）
+  {
+    num: '01',
+    title: 'Micro Film 01',
+    sub:  'Personal Project',
+    meta: ['Micro Film', '2024'],
+    desc: '一个短片项目描述。',
+    imgs: ['images/film1a.jpg','images/film1b.jpg','images/film1c.jpg']
+  },
+  {
+    num: '02',
+    title: 'Micro Film 02',
+    sub:  'Personal Project',
+    meta: ['Micro Film', '2024'],
+    desc: '第二个短片项目描述。',
+    imgs: ['images/film2a.jpg','images/film2b.jpg','images/film2c.jpg']
+  },
+  {
+    num: '03',
+    title: 'Micro Film 03',
+    sub:  'Personal Project',
+    meta: ['Micro Film', '2024'],
+    desc: '第三个短片项目描述。',
+    imgs: ['images/film3a.jpg','images/film3b.jpg','images/film3c.jpg']
+  },
+  // 3：Handmade Model（3 个页面）
+  {
+    num: '01',
+    title: 'Handmade Model 01',
+    sub:  'Personal Project',
+    meta: ['Handmade Model', '2024'],
+    desc: '第一个手工模型描述。',
+    imgs: ['images/model1a.jpg','images/model1b.jpg','images/model1c.jpg']
+  },
+  {
+    num: '02',
+    title: 'Handmade Model 02',
+    sub:  'Personal Project',
+    meta: ['Handmade Model', '2024'],
+    desc: '第二个手工模型描述。',
+    imgs: ['images/model2a.jpg','images/model2b.jpg','images/model2c.jpg']
+  },
+  {
+    num: '03',
+    title: 'Handmade Model 03',
+    sub:  'Personal Project',
+    meta: ['Handmade Model', '2024'],
+    desc: '第三个手工模型描述。',
+    imgs: ['images/model3a.jpg','images/model3b.jpg','images/model3c.jpg']
+  },
+  // 4：AI Coding（3 个页面）
+  {
+    num: '01',
+    title: 'AI Coding 01',
+    sub:  'Personal Project',
+    meta: ['AI Coding', '2024'],
+    desc: '第一个 AI Coding 项目描述。',
+    imgs: ['images/aicoding1a.jpg','images/aicoding1b.jpg','images/aicoding1c.jpg']
+  },
+  {
+    num: '02',
+    title: 'AI Coding 02',
+    sub:  'Personal Project',
+    meta: ['AI Coding', '2024'],
+    desc: '第二个 AI Coding 项目描述。',
+    imgs: ['images/aicoding2a.jpg','images/aicoding2b.jpg','images/aicoding2c.jpg']
+  },
+  {
+    num: '03',
+    title: 'AI Coding 03',
+    sub:  'Personal Project',
+    meta: ['AI Coding', '2024'],
+    desc: '第三个 AI Coding 项目描述。',
+    imgs: ['images/aicoding3a.jpg','images/aicoding3b.jpg','images/aicoding3c.jpg']
+  }
+];
+
+/* 当前媒体详情页所在的"组"：
+   - Micro Film  = 索引 2、3、4
+   - Handmade Model = 索引 5、6、7
+   我们用一个变量记住当前显示的是这 3 个中的第几个。 */
+var mediaGroupStart = 2;   // 默认打开 Micro Film 的第 1 个
+var mediaIndex = 2;        // 当前显示的是 mediaItems 里的哪个
+
+function openMedia(groupIndex) {
+  // groupIndex: 0 或 1 = 音乐，不打开详情
+  // groupIndex: 2 = Micro Film (索引 2、3、4)
+  // groupIndex: 3 = Handmade Model (索引 5、6、7)
+  // groupIndex: 4 = AI Coding (索引 8、9、10)
+  if (groupIndex === 0 || groupIndex === 1) return;
+
+  if (groupIndex === 2) {
+    mediaGroupStart = 2;
+    mediaIndex = 2;
+  } else if (groupIndex === 3) {
+    mediaGroupStart = 5;
+    mediaIndex = 5;
+  } else if (groupIndex === 4) {
+    mediaGroupStart = 8;
+    mediaIndex = 8;
+  }
+
+  renderMedia();
+  document.getElementById('mediaDetail').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeMedia() {
+  document.getElementById('mediaDetail').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function renderMedia() {
+  var m = mediaItems[mediaIndex];
+  document.getElementById('mNum').textContent = m.num;
+  document.getElementById('mTitle').textContent = m.title;
+  document.getElementById('mSub').textContent = m.sub;
+  document.getElementById('mMeta').innerHTML = m.meta
+    .map(function (x) { return '<div>' + x + '</div>'; })
+    .join('');
+  document.getElementById('mDesc').textContent = m.desc;
+  document.getElementById('mImgs').innerHTML = m.imgs
+    .map(function (src) {
+      return '<div class="img"><img src="' + src + '" alt=""></div>';
+    })
+    .join('');
+
+  // 当前组内位置（0、1、2）
+  var pos = mediaIndex - mediaGroupStart;
+  document.getElementById('mPrevBtn').disabled = (pos === 0);
+  document.getElementById('mNextBtn').disabled = (pos === 2);
+}
+
+function switchMedia(step) {
+  var pos = mediaIndex - mediaGroupStart + step;
+  if (pos < 0 || pos > 2) return;
+  mediaIndex = mediaGroupStart + pos;
+  renderMedia();
+}
+
+/* ESC 关闭媒体详情 */
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape') closeMedia();
+});
+/* ============================================================
+   3D Animation 视频全屏播放
+   ============================================================ */
+function openVideo(src) {
+  var modal = document.getElementById('videoModal');
+  var player = document.getElementById('videoPlayer');
+  if (!modal || !player) return;
+  player.src = src;
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  player.play();
+}
+
+function closeVideo() {
+  var modal = document.getElementById('videoModal');
+  var player = document.getElementById('videoPlayer');
+  if (!modal || !player) return;
+  player.pause();
+  player.removeAttribute('src');
+  player.load();
+  modal.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+/* ESC 也关闭视频 */
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape') closeVideo();
+});
+</script>
+
+</body>
+</html>
